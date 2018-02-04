@@ -1,0 +1,410 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>-->
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<script>
+
+
+
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyALxMopDDvh22l3VjU2q5gV-ekxIo2Plnw",
+        authDomain: "mangohack-f5793.firebaseapp.com",
+        databaseURL: "https://mangohack-f5793.firebaseio.com",
+        projectId: "mangohack-f5793",
+        storageBucket: "",
+        messagingSenderId: "1081064810330"
+    };
+    firebase.initializeApp(config);
+
+
+
+
+
+
+    var socket = io.connect('http://localhost:3542');
+
+    // on connection to server, ask for user's name with an anonymous callback
+
+    socket.on('connect', function(){
+//        document.getElementById("ID").innerHTML = socket.id;
+        // call the server-side function 'adduser' and send one parameter (value of prompt)
+        socket.emit('adduser', prompt("What's your name?"));
+        document.getElementById('welcome').innerHTMl += "Get Ready";
+
+
+        check();
+
+
+
+    });
+
+
+
+
+    // listener, whenever the server emits 'updatechat', this updates the chat body
+    socket.on('updatechat', function (username, data) {
+        $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+
+
+
+        var n = data.indexOf("ready");
+        if (n > 1){
+            game();
+        }
+        console.log(data, 'data');
+        console.log(n);
+    });
+
+    // listener, whenever the server emits 'updaterooms', this updates the room the client is in
+    socket.on('updaterooms', function(rooms, current_room) {
+        $('#rooms').empty();
+        $.each(rooms, function(key, value) {
+            if(value == current_room){
+                $('#rooms').append('<div>' + value + '</div>');
+            }
+            else {
+                $('#rooms').append('<div><a href="#" onclick="switchRoom(\''+value+'\')">' + value + '</a></div>');
+            }
+        });
+    });
+
+
+
+</script>
+
+<body style="background-color: #0078c3;">
+<div style="float:left;width:400px;border-right:1px solid black;height:250px;padding:10px;overflow:scroll-y;">
+    <div style="text-align:center;">
+        <div id="alert" style="font-family:cursive; font-size: 30px;"> When the questions appear hold up one two or three fingers to represent your answers </div>
+        <br>
+        <br>
+        <div id="trivia"></div>
+        <div style="font-size:25px;" id="question"></div>
+        <div style="font-size:20px;" id="one"></div>
+        <div style="font-size:20px;" id="two"></div>
+        <div style="font-size:20px;" id="three"></div>
+        <div style="font-size:20px;"id="answer" style=""></div>
+    </div>
+    <!--<b>ROOMS</b>-->
+    <!--<div id="rooms"></div>-->
+
+</div>
+<p style="float:left;width:100px;height:250px;overflow:scroll-y;padding:10px;">
+<div id="conversation"></div>
+<!--<input id="data" style="width:200px;" />-->
+<!--<input type="button" id="datasend" value="send" />-->
+<div id="ID"></div>
+<p id="welcome"> Welcome: </p> <div id="name"></div>
+<div id="pic1"></div>
+<div id="pic2"></div>
+<div id="pic3"></div>
+</div>
+
+
+<h1 style="text-align:center;">Fingers Ready!</h1>
+<video src="" id="video" style="width:150px; height: 150px;" autoplay="true"></video>
+<h2>Your answer</h2>
+
+<img id="img" style="width: 200px; height: 200px; padding-top: 100px;" src="https://www.carnival.com/~/media/Images/Ships/DR/carnival-dream-1.jpg">
+
+<canvas id="preview" style="display:none;"></canvas>
+<div id="logger" style="display:none;"></div>
+
+<script type="text/javascript">
+
+    var data = {
+        "trivia": [
+            {
+                "Question" : "How many Dr. Who's have there been?",
+                "Category": "Sci-Fi",
+                "1" : "1. Just one",
+                "2" : "2. Dr.....Who?",
+                "3" : "3. Thirteen",
+                "Answer": "3"
+            },
+
+            {
+                "Question" : "What did David Pearson shout by way of explanation as he crashed on the last lap of the Daytona 500 in 1976?",
+                "Category" : "racecars",
+                "1" : "1.That bitch hit me.",
+                "2" : "2.Not Again",
+                "3" : "3. Son of a bitch he did it again.",
+                "Answer": "1"
+            },
+            {
+                "Question" : "Which three James Bond movies had scenes shot in Miami?",
+                "Category" : "Miami",
+                "1" : "1. Goldfinger, Thunderball, and Octopussy",
+                "2" : "2. Thunderball, Casino Royale, and Goldfinger",
+                "3" : "3. Dr.No, Casino Royal, and Goldfinger",
+                "Answer": "2"
+            },
+
+            {
+                "Question" : "What TV series was the inspiration for The Golden Girls?",
+                "Category" : "Miami",
+                "1" : "1. All in the Family",
+                "2" : "2. Miami Vice",
+                "3" : "3. Beverly Hill Billies.",
+                "Answer": "2"
+            },
+
+            {
+                "Question" : "What were the names of Bruce Wayne's parents?",
+                "Category" : "SuperHeroes",
+                "1" : "1. George and Elaine",
+                "2" : "2. James and Elizabeth",
+                "3" : "3. Thomasand Martha.",
+                "Answer": "3"
+            },
+
+            {
+                "Question" : "Why did Jabba the Hutt send bounty hunters after Han Solo?",
+                "Category" : "sci-fi",
+                "1" : "1. Because he killed Greedo",
+                "2" : "2. Because Han dumped the cargo he was smuggling for Jabba",
+                "3" : "3. Because the empire promised Jabba a handsome rewared for Han",
+                "Answer": "2"
+            },
+            {
+                "Question" : "Who was the captain in the pilot episode of the original?",
+                "Category" : "sci-fi",
+                "1" : "1. Gates McFadden",
+                "2" : "2. James Kirk",
+                "3" : "3. Christopher Pike",
+                "Answer": "3"
+            },
+
+            {
+                "Question" : "I'm a' get medieval on your ass. Who said that?",
+                "Category" : "Movies",
+                "1" : "1. Marsellus Wallace, Pulp Fiction",
+                "2" : "2. Mr Blonde, Reservoir Dogs",
+                "3" : "3. Django, Django Unchained",
+                "Answer": "1"
+            },
+
+            {
+                "Question" : "What was Marilyn Monroe's name at birth?",
+                "Category" : "Movies",
+                "1" : "1. Emma Renolds",
+                "2" : "2. Norma Jeane Mortenson",
+                "3" : "3. Marilyn Ann Jeane",
+                "Answer": "2"
+            },
+
+            {
+                "Question" : "How many holes are there in a full round of golf?",
+                "Category" : "Sports",
+                "1" : "1. 7",
+                "2" : "2. 18",
+                "3" : "3. 25",
+                "Answer": "2"
+            }
+
+        ]
+    }
+
+
+    var canvas = document.getElementById("preview");
+    var context = canvas.getContext("2d");
+    var capture = [];
+    canvas.width = 800;
+    canvas.height = 800;
+
+    context.width = canvas.width;
+    context.height = canvas.height;
+
+    var video = document.getElementById("video");
+
+
+
+    function logger(msg){
+        $("#logger").text(msg);
+    }
+
+    function loadCam(stream){
+        video.src = window.URL.createObjectURL(stream);
+        logger("camera working correctly");
+    }
+
+    function loadFail(){
+        logger("camera not connected");
+    }
+
+    function viewVideo(video, context){
+        context.drawImage(video, 0,0,context.width,context.height);
+    }
+    $(function(){
+        navigator.getUserMedia = (navigator.getUserMedia  || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia);
+
+
+        if(navigator.getUserMedia){
+            navigator.getUserMedia({video: true}, loadCam, loadFail);
+        }
+
+        setInterval(function(){
+            viewVideo(video, context);
+        }, 70);
+    });
+
+
+    var answer;
+    var answered = [];
+
+    function game(){
+        setTimeout(function(){
+
+            var random =getRand();
+            console.log(data.trivia[random], "dt2");
+//            console.log(data.trivia[random]['Question']);
+
+            answer = data.trivia[random]['Answer'];
+            answered.push(answer);
+
+            document.getElementById('question').innerHTML = JSON.stringify(data.trivia[random]['Question']);
+            document.getElementById('one').innerHTML = JSON.stringify(data.trivia[random]['1']);
+            document.getElementById('two').innerHTML = JSON.stringify(data.trivia[random]['2'])
+            document.getElementById('three').innerHTML = JSON.stringify(data.trivia[random]['3']);
+
+
+            setTimeout(function() {
+                document.getElementById('answer').innerHTML = JSON.stringify(data.trivia[random]['Answer']);
+
+
+
+//
+//            in future can use Math.random to get questions...but just auto added for time
+
+                context.drawImage(video, 0, 0);
+                var img = canvas.toDataURL('image/jpeg', 0.1);
+                document.getElementById('pic1').src = img;
+                document.getElementById('img').src =canvas.toDataURL('image/jpeg', 0.1);
+                document.getElementById('img').style.display ="block";
+            },6000);
+        }, 16000);
+
+        setTimeout(function() {
+            document.getElementById('answer').style.display='none';
+//            document.getElementById("trivia").innerHTML = JSON.stringify(data.trivia[3]);
+
+            var random =getRand();
+            console.log(data.trivia[random]['Question']);
+
+            answer = data.trivia[random]['Answer'];
+            answered.push(answer);
+
+
+            document.getElementById('question').innerHTML = JSON.stringify(data.trivia[random]['Question']);
+            document.getElementById('one').innerHTML = JSON.stringify(data.trivia[random]['1']);
+            document.getElementById('two').innerHTML = JSON.stringify(data.trivia[random]['2'])
+            document.getElementById('three').innerHTML = JSON.stringify(data.trivia[random]['3']);
+
+
+
+
+
+
+            setTimeout(function(){
+                document.getElementById('answer').style.display='block';
+                document.getElementById('answer').innerHTML = JSON.stringify(data.trivia[5]['Answer']);
+                context.drawImage(video, 0, 0);
+                var img = canvas.toDataURL('image/jpeg', 0.1);
+                document.getElementById('pic2').src = img;
+                document.getElementById('img').src = canvas.toDataURL('image/jpeg', 0.1);
+            },9000);
+        }, 23000);
+
+        setTimeout(function(){
+            document.getElementById('answer').style.display='none';
+//            document.getElementById("trivia").innerHTML = JSON.strinify(data.trivia[4]);
+
+            var random =getRand();
+            console.log(data.trivia[random]['Question']);
+
+            answer = data.trivia[random]['Question'];
+            answered.push(answer);
+
+            document.getElementById('question').innerHTML = JSON.stringify(data.trivia[random]['Question']);
+            document.getElementById('one').innerHTML = JSON.stringify(data.trivia[random]['1']);
+            document.getElementById('two').innerHTML = JSON.stringify(data.trivia[random]['2'])
+            document.getElementById('three').innerHTML = JSON.stringify(data.trivia[random]['3']);
+
+
+            setTimeout(function() {
+                document.getElementById('answer').style.display='block';
+                document.getElementById('answer').innerHTML = JSON.stringify(data.trivia[random]['Answer']);
+                context.drawImage(video, 0, 0);
+                var img = canvas.toDataURL('image/jpeg', 0.1);
+                document.getElementById('pic3').src = img;
+                document.getElementById('img').src =canvas.toDataURL('image/jpeg', 0.1);
+            },6000);
+        }, 29000);
+
+        setTimeout(function(){
+            sendInfo();
+        }, 30000);
+
+    }
+
+
+    function sendInfo() {
+        setTimeout(function () {
+            var i = 100;
+            var random = getRand();
+            var k = 'Users/' + random;
+            firebase.database().ref(k).set({
+                ID: socket.id,
+                Pic1: document.getElementById('pic1').src,
+                Pic2: document.getElementById('pic2').src,
+                Pic3: document.getElementById('pic3').src,
+                Name: document.getElementById('name').innerHTML,
+                Answer: answered
+
+            });
+            i++;
+        }, 30000);
+
+    }
+
+    var t;
+
+    function check(){
+        var query = firebase.database().ref("Users/users").orderByKey();
+        query.once("value")
+            .then(function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var key = childSnapshot.key;
+                    var childData = childSnapshot.val();
+
+                    t=  childData;
+                    document.getElementById('name').innerHTML +=  t;
+
+                });
+            });
+    }
+
+
+
+
+    var getRand = (function() {
+        var nums = [0,1,2,3,4,5,6, 7, 8, 9,];
+        var current = [];
+        function rand(n) {
+            return (Math.random() * n)|0;
+        }
+        return function() {
+            if (!current.length) current = nums.slice();
+            return current.splice(rand(current.length), 1);
+        }
+    }());
+
+
+
+
+</script>
+</body>
+</html>

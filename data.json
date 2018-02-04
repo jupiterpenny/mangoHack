@@ -1,0 +1,93 @@
+{
+  "trivia": [
+    {
+      "Question" : "How many Dr. Who's have there been?",
+      "Category": "Sci-Fi",
+      "1" : "1. Just one",
+      "2" : "2. Dr.....Who?",
+      "3" : "3. Thirteen",
+      "Id": "1",
+      "Answer": "3"
+    },
+
+    {
+      "Question" : "What did David Pearson shout by way of explanation as he crashed on the last lap of the Daytona 500 in 1976?",
+      "Category" : "racecars",
+      "1" : "1. That bitch hit me.",
+      "2" : "2. Not Again",
+      "3" : "3. Son of a bitch he did it again.",
+      "Answer": "1"
+    },
+    {
+      "Question" : "Which three James Bond movies had scenes shot in Miami?",
+      "Category" : "Miami",
+      "1" : "1. Goldfinger, Thunderball, and Octopussy",
+      "2" : "2. Thunderball, Casino Royale, and Goldfinger",
+      "3" : "3. Dr.No, Casino Royal, and Goldfinger",
+      "Answer": "2"
+    },
+
+    {
+      "Question" : "What TV series was the inspiration for The Golden Girls?",
+      "Category" : "Miami",
+      "1" : "1. All in the Family",
+      "2" : "2. Miami Vice",
+      "3" : "3. Beverly Hill Billies.",
+      "Answer": "2"
+    },
+
+    {
+      "Question" : "What were the names of Bruce Wayne's parents?",
+      "Category" : "SuperHeroes",
+      "1" : "1. George and Elaine",
+      "2" : "2. James and Elizabeth",
+      "3" : "3. Thomasand Martha.",
+      "Answer": "3"
+    },
+
+    {
+      "Question" : "Why did Jabba the Hutt send bounty hunters after Han Solo?",
+      "Category" : "sci-fi",
+      "1" : "1. Because he killed Greedo",
+      "2" : "2. Because Han dumped the cargo he was smuggling for Jabba",
+      "3" : "3. Because the empire promised Jabba a handsome rewared for Han",
+      "Answer": "2"
+    },
+    {
+      "Question" : "Who was the captain in the pilot episode of the original?",
+      "Category" : "sci-fi",
+      "1" : "1. Gates McFadden",
+      "2" : "2. James Kirk",
+      "3" : "3. Christopher Pike",
+      "Answer": "3"
+    },
+
+    {
+      "Question" : "I'm a' get medieval on your ass. Who said that?",
+      "Category" : "Movies",
+      "1" : "1. Marsellus Wallace, Pulp Fiction",
+      "2" : "2. Mr Blonde, Reservoir Dogs",
+      "3" : "3. Django, Django Unchained",
+      "Answer": "1"
+    },
+
+    {
+      "Question" : "What was Marilyn Monroe's name at birth?",
+      "Category" : "Movies",
+      "1" : "1. Emma Renolds",
+      "2" : "2.Norma Jeane Mortenson",
+      "3" : "3. Marilyn Ann Jeane",
+      "Answer": "2"
+    },
+
+    {
+      "Question" : "How many holes are there in a full round of golf?",
+      "Category" : "Sports",
+      "1" : "1. 7",
+      "2" : "2. 18",
+      "3" : "3. 25",
+      "Answer": "2"
+    }
+
+  ]
+}
